@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+begin
+  require 'yacp'
+rescue
+  $LOAD_PATH << File.expand_path("../lib", File.dirname(__FILE__))
+  require 'yacp'
+end
+
+# ...
