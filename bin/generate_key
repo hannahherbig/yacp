@@ -6,6 +6,8 @@ require 'yaml'
 class Generator < Thor::Group
   include Thor::Actions
 
+  argument :bits, :type => :numeric, :default => 1024
+
   def setup
     self.destination_root = File.expand_path("../etc", File.dirname(__FILE__))
   end
@@ -13,7 +15,7 @@ class Generator < Thor::Group
   def generate
     puts __FILE__
     print "If this is slow, generate some randomness... "
-    @key_pair = RSA::KeyPair.generate(1024)
+    @key_pair = RSA::KeyPair.generate(bits)
     puts "done."
   end
 
