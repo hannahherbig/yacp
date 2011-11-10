@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH << File.expand_path("../lib", File.dirname(__FILE__))
+
+require 'socket'
+require 'json'
+require 'hashie'
+require 'bindata'
+require 'pry'
+
+$socket = TCPSocket.new('localhost', 1337)
+
+def socket; $socket end
+
+def write(object)
+  str = BinData::Stringz.new(JSON.generate(object)).to_binary_s
+  socket.write(str)
+  puts "wrote #{str.inspect}"
+end
+
+pry

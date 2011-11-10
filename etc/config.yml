@@ -1,0 +1,7 @@
+port: 1337
+
+max_connections:
+  outgoing: 10
+  incoming: 10
+
+# ...
