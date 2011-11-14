@@ -6,15 +6,15 @@ require 'logger'
 require 'socket'
 
 class Server
-  attr_reader :server, :sockets, :logger
+  attr_reader :sockets, :logger
 
-  def initialize(port, debug=false)
-    @server  = TCPServer.new(port)
-    @sockets = []
-    @logger  = Logger.new($stdout)
+  def initialize(host, port, debug=false)
+    @sockets = Socket.udp_server_sockets(host, port)
     @debug   = debug
 
-    debug "#{hostport(server.addr)} server listening"
+    @sockets.each do |s|
+      debug "#{s.local_address.inspect_sockaddr} server listening"
+    end
   end
 
   def debug(string = nil)
@@ -27,45 +27,13 @@ class Server
     end
   end
 
-  def hostport(addr)
-    "#{addr[2]}:#{addr[1]}"
-  end
-
   def poll
-    selections = IO.select(sockets + [server], nil, nil, nil)
-    selections[0].each { |sock| readable(sock) }
+    Socket.udp_server_recv(IO.select(sockets)[0]) do |str, src|
+      msg = Hashie::Mash.new(JSON.parse(str))
+      debug("#{src.remote_address.inspect_sockaddr} read #{msg.to_hash.inspect}")
+    end
 
     sleep 0.1 if debug # slow things down a bit
-  end
-
-  def readable(socket)
-    if socket == server
-      new_connection
-    else
-      begin
-        readable_client(socket)
-      rescue EOFError
-        dead_client(socket)
-      end
-    end
-  end
-
-  def new_connection
-    sock = server.accept
-    sockets << sock
-    debug "#{hostport(sock.addr)} new socket"
-  end
-
-  def readable_client(socket)
-    debug "#{hostport(socket.addr)} readable"
-    read = Hashie::Mash.new(JSON.parse(BinData::Stringz.read(socket).to_s))
-    debug "#{hostport(socket.addr)} read: #{read.to_hash.inspect}"
-  end
-
-  def dead_client(socket)
-    debug "#{hostport(socket.addr)} reached end of file"
-    socket.close
-    sockets.delete(socket)
   end
 
   def io_loop
