@@ -7,15 +7,15 @@ class GenerateKey < Thor::Group
 
   class_option :bits, :default => 1024, :aliases => '-b'
   class_option :file, :default => 'etc/identity.yml', :aliases => '-f'
-  
+
   def setup
     self.destination_root = File.expand_path(".", File.dirname(__FILE__))
   end
-  
+
   def generate
-    print "If this is slow, generate some randomness... "
+    say "If this is slow, generate some randomness... "
     @key_pair = RSA::KeyPair.generate(options[:bits])
-    puts "done."
+    say "done."
   end
 
   def save

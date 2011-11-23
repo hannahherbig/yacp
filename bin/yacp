@@ -9,5 +9,5 @@ require 'hashie'
 
 config_file = File.expand_path("../etc/config.yml", File.dirname(__FILE__))
 config = Hashie::Mash.new(YAML.load_file(config_file))
-server = Server.new('0.0.0.0', config.port, ARGV.include?('-d'))
+server = Server.new(config.host, config.port, ARGV.include?('-d'))
 server.io_loop

@@ -11,16 +11,17 @@ class Server
   def initialize(host, port, debug=false)
     @sockets = Socket.udp_server_sockets(host, port)
     @debug   = debug
+    @nodes   = []
 
     @sockets.each do |s|
-      debug "#{s.local_address.inspect_sockaddr} server listening"
+      debug s.local_address, "server listening"
     end
   end
 
-  def debug(string = nil)
+  def debug(addr = nil, string = nil)
     if @debug
-      if string
-        puts string
+      if addr && string
+        puts "#{addr.inspect_sockaddr} #{string}"
       end
 
       @debug
@@ -29,8 +30,13 @@ class Server
 
   def poll
     Socket.udp_server_recv(IO.select(sockets)[0]) do |str, src|
-      msg = Hashie::Mash.new(JSON.parse(str))
-      debug("#{src.remote_address.inspect_sockaddr} read #{msg.to_hash.inspect}")
+      begin
+        msg = JSON.parse(str)
+        debug(src.remote_address, "read #{msg.inspect}")
+        message_received(Hashie::Mash.new(msg))
+      rescue JSON::JSONError
+        debug(src.remote_address, "bad message: #{str.inspect}")
+      end
     end
 
     sleep 0.1 if debug # slow things down a bit
@@ -39,6 +45,13 @@ class Server
   def io_loop
     loop do
       poll
+    end
+  end
+
+  def message_received(msg)
+    case msg.type.intern
+    when :node
+      # store node info
     end
   end
 end
