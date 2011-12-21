@@ -1,0 +1,29 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    bindata (1.4.3)
+    bson (1.4.0)
+    coderay (0.9.8)
+    hashie (1.2.0)
+    method_source (0.6.7)
+      ruby_parser (>= 2.3.1)
+    pry (0.9.7.4)
+      coderay (~> 0.9.8)
+      method_source (~> 0.6.7)
+      ruby_parser (>= 2.3.1)
+      slop (~> 2.1.0)
+    rsa (0.1.4)
+    ruby_parser (2.3.1)
+      sexp_processor (~> 3.0)
+    sexp_processor (3.0.7)
+    slop (2.1.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bindata
+  bson
+  hashie
+  pry
+  rsa

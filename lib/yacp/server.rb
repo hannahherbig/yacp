@@ -51,7 +51,9 @@ class Server
   def message_received(msg)
     case msg.type.intern
     when :node
-      # store node info
+      if (Time.now.to_i - msg.payload.timestam).abs > 3600
+        @nodes << msg.payload
+      end
     end
   end
 end
