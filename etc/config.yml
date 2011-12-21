@@ -1,8 +1,0 @@
-host: 127.0.0.1
-port: 1337
-
-max_connections:
-  outgoing: 10
-  incoming: 10
-
-# ...

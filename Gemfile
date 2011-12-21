@@ -1,5 +1,0 @@
-gem 'rsa'
-gem 'bson'
-gem 'hashie'
-gem 'yaml'
-gem 'bindata'
